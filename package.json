@@ -1,0 +1,24 @@
+{
+  "name": "webapp-express",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node --env-file=.env --watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmanueleAnnoscia/webapp-express.git"
+  },
+  "author": "Emanuele",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmanueleAnnoscia/webapp-express/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/EmanueleAnnoscia/webapp-express#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
+  }
+}
