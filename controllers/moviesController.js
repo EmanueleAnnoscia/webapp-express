@@ -2,17 +2,29 @@ import connection from "../db.js";
 
 
 const index = (req, res) => {
+    console.log(req.imagePath)
+
     const sql = `
-        SELECT *
+        SELECT movies.*, ROUND(AVG(reviews.vote), 2) as vote_avg
         FROM movies
+        LEFT JOIN reviews
+        ON movies.id = reviews.movie_id
+        WHERE movies.id = 1
+        GROUP BY movies.id
     `
 
     connection.query(sql, (err, results) => {
         if (err) {
             console.log(err);
         } else {
+            const movies = results.map((curMovie) => {
+                return {
+                    ...curMovie,
+                    image: `${req.imagePath}/${curMovie.image}`
+                }
+            })
             res.json({
-                data: "Movies INDEX"
+                data: movies,
             });
         }
     });
@@ -22,9 +34,12 @@ const show = (req, res) => {
     const id = req.params.id;
 
     const movieSql = `
-        SELECT *
+        SELECT movies.*, ROUND(AVG(reviews.vote), 2) as vote_avg
         FROM movies
-        WHERE id = ?
+        LEFT JOIN reviews
+        ON movies.id = reviews.movie_id
+        WHERE movies.id = 1
+        GROUP BY movies.id
     `;
 
     const reviewSql = `
