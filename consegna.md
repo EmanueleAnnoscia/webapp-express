@@ -7,7 +7,7 @@ Ciao ragazzi, è ora di mettere alla prova le vostre conoscenze iniziando a cost
 - Prepariamo **una rotta show** per ottenere i dettagli di un singolo film e le sue recensioni###  v
 
 Bonus
-- Inserire delle immagini nel progetto express e dunque nel db
-- Inserire i dati di connessione al database come variabili d’ambiente
-- Inserire un middleware per le rotte inesistenti
-- Inserire un middleware per la gestione errori
+- Inserire delle immagini nel progetto express e dunque nel db v
+- Inserire i dati di connessione al database come variabili d’ambiente v
+- Inserire un middleware per le rotte inesistenti  v 
+- Inserire un middleware per la gestione errori  v
