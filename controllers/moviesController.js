@@ -66,8 +66,8 @@ const show = (req, res) => {
                 res.json({
                     data: {
                         ...movieResults[0],
-                        image: movieResults.image ? `${req.imagePath}/${curMovie.image}` : null,
-                        reviews: reviewResults
+                        image: movieResults[0].image ? `${req.imagePath}/${movieResults[0].image}` : null,
+                        reviews: reviewResults,
                     },
                 });
             });
