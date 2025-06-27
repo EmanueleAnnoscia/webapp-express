@@ -9,7 +9,6 @@ const index = (req, res) => {
         FROM movies
         LEFT JOIN reviews
         ON movies.id = reviews.movie_id
-        WHERE movies.id = 1
         GROUP BY movies.id
     `
 
@@ -20,7 +19,7 @@ const index = (req, res) => {
         const movies = results.map((curMovie) => {
             return {
                 ...curMovie,
-                image: `${req.imagePath}/${curMovie.image}`
+                image: curMovie.image ? `${req.imagePath}/${curMovie.image}` : null,
             };
         })
         res.json({
@@ -67,6 +66,7 @@ const show = (req, res) => {
                 res.json({
                     data: {
                         ...movieResults[0],
+                        image: movieResults.image ? `${req.imagePath}/${curMovie.image}` : null,
                         reviews: reviewResults
                     },
                 });
