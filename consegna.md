@@ -11,3 +11,4 @@ Bonus
 - Inserire i dati di connessione al database come variabili d’ambiente v
 - Inserire un middleware per le rotte inesistenti  v 
 - Inserire un middleware per la gestione errori  v
+
