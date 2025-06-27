@@ -62,7 +62,8 @@ const show = (req, res) => {
             connection.query(reviewSql, [id], (err, reviewResults) => {
                 res.json({
                     data: {
-                        ...movieResults[0], reviews: reviewResults
+                        ...movieResults[0], 
+                        reviews: reviewResults
                     },
                 });
             });
