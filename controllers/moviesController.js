@@ -15,18 +15,18 @@ const index = (req, res) => {
 
     connection.query(sql, (err, results) => {
         if (err) {
-            console.log(err);
-        } else {
-            const movies = results.map((curMovie) => {
-                return {
-                    ...curMovie,
-                    image: `${req.imagePath}/${curMovie.image}`
-                }
-            })
-            res.json({
-                data: movies,
-            });
+            return next(new Error(err))
         }
+        const movies = results.map((curMovie) => {
+            return {
+                ...curMovie,
+                image: `${req.imagePath}/${curMovie.image}`
+            };
+        })
+        res.json({
+            data: movies,
+        });
+
     });
 };
 
@@ -51,7 +51,7 @@ const show = (req, res) => {
 
     connection.query(movieSql, [id], (err, movieResults) => {
         if (err) {
-            console.log(err);
+            return next(new Error(err));
         }
 
         if (movieResults.length === 0) {
@@ -60,9 +60,13 @@ const show = (req, res) => {
             });
         } else {
             connection.query(reviewSql, [id], (err, reviewResults) => {
+                if (err) {
+                    return next(new Error(err));
+                }
+
                 res.json({
                     data: {
-                        ...movieResults[0], 
+                        ...movieResults[0],
                         reviews: reviewResults
                     },
                 });
