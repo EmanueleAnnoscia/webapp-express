@@ -1,43 +1,52 @@
 import connection from "../db.js";
 
 
-const index = (req, res) => {
-    console.log(req.imagePath)
+const index = (req, res, next) => {
+    const search = req.query.search;
 
-    const sql = `
+    let sql = `
         SELECT movies.*, ROUND(AVG(reviews.vote), 2) as vote_avg
         FROM movies
-        LEFT JOIN reviews
-        ON movies.id = reviews.movie_id
-        GROUP BY movies.id
-    `
+        LEFT JOIN reviews ON movies.id = reviews.movie_id
+    `;
+    const params = [];
 
-    connection.query(sql, (err, results) => {
+    if (search !== undefined) {
+        sql += ' WHERE movies.title LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    sql += ' GROUP BY movies.id';
+
+    connection.query(sql, params, (err, results) => {
         if (err) {
-            return next(new Error(err))
+            return next(new Error(err));
         }
+
         const movies = results.map((curMovie) => {
             return {
                 ...curMovie,
                 image: curMovie.image ? `${req.imagePath}/${curMovie.image}` : null,
             };
-        })
+        });
+
         res.json({
             data: movies,
         });
-
     });
 };
 
+
 const show = (req, res) => {
-    const id = req.params.id;
+    const slug = req.params.slug;
+
 
     const movieSql = `
         SELECT movies.*, ROUND(AVG(reviews.vote), 2) as vote_avg
         FROM movies
         LEFT JOIN reviews
         ON movies.id = reviews.movie_id
-        WHERE movies.id = 1
+        WHERE movies.slug = ?
         GROUP BY movies.id
     `;
 
@@ -48,7 +57,7 @@ const show = (req, res) => {
 
     `;
 
-    connection.query(movieSql, [id], (err, movieResults) => {
+    connection.query(movieSql, [slug], (err, movieResults) => {
         if (err) {
             return next(new Error(err));
         }
@@ -58,15 +67,16 @@ const show = (req, res) => {
                 error: "Movie not found",
             });
         } else {
-            connection.query(reviewSql, [id], (err, reviewResults) => {
+            const movieData = movieResults[0];
+            connection.query(reviewSql, [movieData.id], (err, reviewResults) => {
                 if (err) {
                     return next(new Error(err));
                 }
 
                 res.json({
                     data: {
-                        ...movieResults[0],
-                        image: movieResults[0].image ? `${req.imagePath}/${movieResults[0].image}` : null,
+                        ...movieData,
+                        image: movieResults[0].image ? `${req.imagePath}/${movieData.image}` : null,
                         reviews: reviewResults,
                     },
                 });
