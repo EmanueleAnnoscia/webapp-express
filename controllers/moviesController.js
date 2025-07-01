@@ -85,7 +85,48 @@ const show = (req, res) => {
     });
 };
 
+
+const storeReview = (req,res) => {
+    const {id} = req.params;
+    //verifichaimo che il film con questo id esista
+    const movieSql = `
+        SELECT *
+        FROM movies
+        WHERE id = ?
+    `
+    //se il libro essite
+    connection.query(movieSql, [id], (err, movieResults) =>{
+        if (movieResults.length === 0){
+            return res.status(404).json({
+                error: "Film non trovato",
+            })
+        }
+        //preleviamo dal body la richiesta dati
+        const {name, vote, text} = req.body;
+        //salviamo la nuova review nel database
+        const newReviewSql= `
+            INSERT INTO  reviews (movie_id, name, vote, text)
+            VALUES (?, ?, ?, ?)
+        `;
+
+        connection.query(
+            newReviewSql, 
+            [id, name, vote, text],
+            (err, results)=>{
+                if (err){
+                    return next(newError(err))
+                }
+                return res.status(201).json({
+                    message: "Recensione creata",
+                    id: results.insertId,
+                })
+            }
+        )
+    })
+}
+
 export default {
     index,
-    show
+    show,
+    storeReview
 }
