@@ -85,6 +85,27 @@ const show = (req, res) => {
     });
 };
 
+const store = (req, res, next) =>{
+    //prendiamo i dati del film dal body della richiesta
+    const {title, director, genre, release_year, abstract} = req.body;
+    //scriviamo la PREPARED STATEMENT QUERY
+    const sql = `
+        INSERT INTO movies (title, director, genre, release_year, abstract)
+        VALUES (?, ?, ?, ?, ?)
+    `
+    //eseguiamo la query
+    connection.query(sql, [slug, title, director, abstract], (err, result)=>{
+        //gestione dell'errore
+        if(err){
+            return next (newError(err));
+        }
+        //invio della risposta con il codice 201 id e e slug
+        return res.status(201).json({
+            id: result.insertId,
+            slug,
+        })
+    })
+}
 
 const storeReview = (req,res) => {
     const {id} = req.params;
@@ -128,5 +149,6 @@ const storeReview = (req,res) => {
 export default {
     index,
     show,
+    store,
     storeReview
 }
